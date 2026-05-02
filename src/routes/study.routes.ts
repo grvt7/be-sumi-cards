@@ -1,5 +1,13 @@
 import { Router } from 'express';
-import { createSession, getSessions, getProgress, getStats } from '@/controllers/study.controller';
+import {
+  createSession,
+  getSessions,
+  getProgress,
+  getStats,
+  getCategoryProgress,
+  getCardProgress,
+  getCardProgressSummary,
+} from '@/controllers/study.controller';
 import { authenticate } from '@/middlewares/auth.middleware';
 
 const router = Router();
@@ -37,5 +45,32 @@ router.get('/progress', getProgress);
  * @access  Private
  */
 router.get('/stats', getStats);
+
+/**
+ * @route   GET /api/v1/study/progress/:category
+ * @desc    Get user's progress for a specific category with detailed sessions and cards
+ * @access  Private
+ * @param   category - Category name (e.g., 'hiragana-words', 'vocabulary', etc.)
+ */
+router.get('/progress/:category', getCategoryProgress);
+
+/**
+ * @route   GET /api/v1/study/cards
+ * @desc    Get user's card progress with detailed metrics
+ * @access  Private
+ * @query   studyType? - Filter by study type (kana, vocabulary, flashcard, words)
+ * @query   category? - Filter by category
+ * @query   masteryLevel? - Filter by mastery level (0-5)
+ */
+router.get('/cards', getCardProgress);
+
+/**
+ * @route   GET /api/v1/study/cards/summary
+ * @desc    Get user's card progress summary with mastery breakdown
+ * @access  Private
+ * @query   studyType? - Filter by study type (kana, vocabulary, flashcard, words)
+ * @query   category? - Filter by category
+ */
+router.get('/cards/summary', getCardProgressSummary);
 
 export default router;

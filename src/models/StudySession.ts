@@ -1,6 +1,20 @@
 import mongoose, { Schema } from 'mongoose';
 import { StudySessionDocument } from './study.types';
 
+const cardStudyDetailSchema = new Schema(
+  {
+    cardId: { type: String, required: true },
+    front: { type: String, required: true },
+    back: { type: String, required: true },
+    frontSub: { type: String },
+    backSub: { type: String },
+    isCorrect: { type: Boolean, required: true },
+    attempts: { type: Number, required: true, min: 1 },
+    timeSpent: { type: Number, required: true, min: 0 },
+  },
+  { _id: false },
+);
+
 const studySessionSchema = new Schema<StudySessionDocument>(
   {
     userId: {
@@ -10,7 +24,7 @@ const studySessionSchema = new Schema<StudySessionDocument>(
     },
     studyType: {
       type: String,
-      enum: ['kana', 'vocabulary', 'flashcard'],
+      enum: ['kana', 'vocabulary', 'flashcard', 'words'],
       required: [true, 'Study type is required'],
     },
     category: {
@@ -41,6 +55,10 @@ const studySessionSchema = new Schema<StudySessionDocument>(
     studiedAt: {
       type: Date,
       default: Date.now,
+    },
+    cardsStudiedDetails: {
+      type: [cardStudyDetailSchema],
+      default: [],
     },
   },
   { timestamps: true },

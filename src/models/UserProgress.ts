@@ -47,6 +47,10 @@ const userProgressSchema = new Schema<UserProgressDocument>(
       type: Date,
       default: Date.now,
     },
+    uniqueCardIds: {
+      type: [String],
+      default: [],
+    },
   },
   { timestamps: true },
 );
