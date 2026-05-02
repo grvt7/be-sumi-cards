@@ -1,13 +1,33 @@
-import mongoose from 'mongoose';
+import mongoose, { type FilterQuery } from 'mongoose';
 
-import StudySession from '@/models/StudySession';
-import UserProgress from '@/models/UserProgress';
 import CardProgress from '@/models/CardProgress';
-import {
+import type {
   CreateStudySessionData,
   StudySessionResponse,
   UserProgressResponse,
+  StudySessionDocument,
+  UserProgressDocument,
+  StudyType,
 } from '@/models/study.types';
+import StudySession from '@/models/StudySession';
+import UserProgress from '@/models/UserProgress';
+
+interface SessionFilter {
+  userId: mongoose.Types.ObjectId;
+  studyType?: StudyType;
+}
+
+interface CategoryFilter {
+  userId: mongoose.Types.ObjectId;
+  category: string;
+}
+
+interface CardProgressFilter {
+  userId: mongoose.Types.ObjectId;
+  studyType?: StudyType;
+  category?: string;
+  'stats.masteryLevel'?: number;
+}
 
 export class StudyService {
   async createStudySession(userId: string, sessionData: CreateStudySessionData) {
@@ -50,8 +70,8 @@ export class StudyService {
     return this.sanitizeStudySession(session);
   }
 
-  async getUserSessions(userId: string, studyType?: string, limit = 10) {
-    const filter: any = { userId: new mongoose.Types.ObjectId(userId) };
+  async getUserSessions(userId: string, studyType?: StudyType, limit = 10) {
+    const filter: FilterQuery<SessionFilter> = { userId: new mongoose.Types.ObjectId(userId) };
     if (studyType) {
       filter.studyType = studyType;
     }
@@ -61,7 +81,7 @@ export class StudyService {
   }
 
   async getCategorySessions(userId: string, category: string, limit = 100) {
-    const filter: any = {
+    const filter: FilterQuery<CategoryFilter> = {
       userId: new mongoose.Types.ObjectId(userId),
       category: category,
     };
@@ -71,8 +91,8 @@ export class StudyService {
     return sessions.map(session => this.sanitizeStudySession(session));
   }
 
-  async getUserProgress(userId: string, studyType?: string) {
-    const filter: any = { userId: new mongoose.Types.ObjectId(userId) };
+  async getUserProgress(userId: string, studyType?: StudyType) {
+    const filter: FilterQuery<SessionFilter> = { userId: new mongoose.Types.ObjectId(userId) };
     if (studyType) {
       filter.studyType = studyType;
     }
@@ -109,11 +129,11 @@ export class StudyService {
 
   async getCardProgress(
     userId: string,
-    studyType?: string,
+    studyType?: StudyType,
     category?: string,
     masteryLevel?: number,
   ) {
-    const filter: any = { userId: new mongoose.Types.ObjectId(userId) };
+    const filter: FilterQuery<CardProgressFilter> = { userId: new mongoose.Types.ObjectId(userId) };
     if (studyType) filter.studyType = studyType;
     if (category) filter.category = category;
     if (masteryLevel !== undefined) filter['stats.masteryLevel'] = masteryLevel;
@@ -131,8 +151,10 @@ export class StudyService {
     }));
   }
 
-  async getCardProgressSummary(userId: string, studyType?: string, category?: string) {
-    const matchStage: any = { userId: new mongoose.Types.ObjectId(userId) };
+  async getCardProgressSummary(userId: string, studyType?: StudyType, category?: string) {
+    const matchStage: FilterQuery<CardProgressFilter> = {
+      userId: new mongoose.Types.ObjectId(userId),
+    };
     if (studyType) matchStage.studyType = studyType;
     if (category) matchStage.category = category;
 
@@ -265,7 +287,7 @@ export class StudyService {
     }
   }
 
-  private sanitizeStudySession(session: any): StudySessionResponse {
+  private sanitizeStudySession(session: StudySessionDocument): StudySessionResponse {
     return {
       _id: session._id.toString(),
       studyType: session.studyType,
@@ -279,7 +301,7 @@ export class StudyService {
     };
   }
 
-  private sanitizeUserProgress(progress: any): UserProgressResponse {
+  private sanitizeUserProgress(progress: UserProgressDocument): UserProgressResponse {
     return {
       _id: progress._id.toString(),
       studyType: progress.studyType,
