@@ -1,7 +1,7 @@
 declare global {
   namespace Express {
     interface Request {
-      user?: import('@/models/user.types').UserDocument;
+      user?: import('@/models/UserTypes').UserDocument;
       requestId?: string;
     }
   }

@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { UserProgressDocument } from './study.types';
+import { UserProgressDocument } from './StudyTypes';
 
 const userProgressSchema = new Schema<UserProgressDocument>(
   {

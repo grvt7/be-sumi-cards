@@ -8,7 +8,7 @@ import type {
   StudySessionDocument,
   UserProgressDocument,
   StudyType,
-} from '@/models/study.types';
+} from '@/models/StudyTypes';
 import StudySession from '@/models/StudySession';
 import UserProgress from '@/models/UserProgress';
 
@@ -31,15 +31,23 @@ interface CardProgressFilter {
 
 export class StudyService {
   async createStudySession(userId: string, sessionData: CreateStudySessionData) {
+    const totalAttempts = sessionData.correctAnswers + (sessionData.wrongAnswers || 0);
     const accuracy =
-      sessionData.cardsStudied > 0
-        ? Math.round((sessionData.correctAnswers / sessionData.cardsStudied) * 100)
-        : 0;
+      totalAttempts > 0 ? Math.round((sessionData.correctAnswers / totalAttempts) * 100) : 0;
 
     const session = await StudySession.create({
       userId: new mongoose.Types.ObjectId(userId),
-      ...sessionData,
+      studyType: sessionData.studyType,
+      category: sessionData.category,
+      cardsStudied: sessionData.cardsStudied,
+      correctAnswers: sessionData.correctAnswers,
+      wrongAnswers: sessionData.wrongAnswers || 0,
+      totalTime: sessionData.totalTime,
       accuracy,
+      bestStreak: sessionData.bestStreak || 0,
+      peekedCount: sessionData.peekedCount || 0,
+      wrongCardCount: sessionData.wrongCardCount || 0,
+      cardsStudiedDetails: sessionData.cardsStudiedDetails,
     });
 
     // Update user progress
@@ -294,8 +302,12 @@ export class StudyService {
       category: session.category,
       cardsStudied: session.cardsStudied,
       correctAnswers: session.correctAnswers,
+      wrongAnswers: session.wrongAnswers || 0,
       totalTime: session.totalTime,
       accuracy: session.accuracy,
+      bestStreak: session.bestStreak || 0,
+      peekedCount: session.peekedCount || 0,
+      wrongCardCount: session.wrongCardCount || 0,
       studiedAt: session.studiedAt,
       cardsStudiedDetails: session.cardsStudiedDetails || [],
     };

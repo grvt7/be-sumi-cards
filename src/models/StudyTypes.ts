@@ -11,6 +11,7 @@ export interface CardStudyDetail {
   isCorrect: boolean;
   attempts: number;
   timeSpent: number;
+  peeked?: boolean;
 }
 
 export interface StudySessionDocument extends mongoose.Document {
@@ -20,8 +21,12 @@ export interface StudySessionDocument extends mongoose.Document {
   category?: string; // e.g., 'hiragana', 'jlpt-n5', etc.
   cardsStudied: number;
   correctAnswers: number;
+  wrongAnswers: number;
   totalTime: number; // in seconds
   accuracy: number; // percentage
+  bestStreak: number;
+  peekedCount: number;
+  wrongCardCount: number;
   studiedAt: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -49,7 +54,12 @@ export interface CreateStudySessionData {
   category?: string;
   cardsStudied: number;
   correctAnswers: number;
+  wrongAnswers?: number;
   totalTime: number;
+  accuracy: number;
+  bestStreak?: number;
+  peekedCount?: number;
+  wrongCardCount?: number;
   cardsStudiedDetails?: CardStudyDetail[];
 }
 
@@ -59,8 +69,12 @@ export interface StudySessionResponse {
   category?: string;
   cardsStudied: number;
   correctAnswers: number;
+  wrongAnswers: number;
   totalTime: number;
   accuracy: number;
+  bestStreak: number;
+  peekedCount: number;
+  wrongCardCount: number;
   studiedAt: Date;
   cardsStudiedDetails?: CardStudyDetail[];
 }

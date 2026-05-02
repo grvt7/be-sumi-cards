@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { StudySessionDocument } from './study.types';
+import { StudySessionDocument } from './StudyTypes';
 
 const cardStudyDetailSchema = new Schema(
   {
@@ -11,6 +11,7 @@ const cardStudyDetailSchema = new Schema(
     isCorrect: { type: Boolean, required: true },
     attempts: { type: Number, required: true, min: 1 },
     timeSpent: { type: Number, required: true, min: 0 },
+    peeked: { type: Boolean, default: false },
   },
   { _id: false },
 );
@@ -41,6 +42,11 @@ const studySessionSchema = new Schema<StudySessionDocument>(
       required: [true, 'Correct answers is required'],
       min: [0, 'Correct answers cannot be negative'],
     },
+    wrongAnswers: {
+      type: Number,
+      default: 0,
+      min: [0, 'Wrong answers cannot be negative'],
+    },
     totalTime: {
       type: Number,
       required: [true, 'Total time is required'],
@@ -51,6 +57,21 @@ const studySessionSchema = new Schema<StudySessionDocument>(
       required: [true, 'Accuracy is required'],
       min: [0, 'Accuracy cannot be negative'],
       max: [100, 'Accuracy cannot exceed 100'],
+    },
+    bestStreak: {
+      type: Number,
+      default: 0,
+      min: [0, 'Best streak cannot be negative'],
+    },
+    peekedCount: {
+      type: Number,
+      default: 0,
+      min: [0, 'Peeked count cannot be negative'],
+    },
+    wrongCardCount: {
+      type: Number,
+      default: 0,
+      min: [0, 'Wrong card count cannot be negative'],
     },
     studiedAt: {
       type: Date,

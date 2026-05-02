@@ -2,7 +2,7 @@ import { NextFunction, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 import { ExpressRequestInterface } from '@/models/expressRequest.interface';
-import User from '@/models/user.model';
+import User from '@/models/User';
 import { ApiError } from '@/utils/ApiErrors';
 import asyncHandler from '@/utils/asyncHandler';
 

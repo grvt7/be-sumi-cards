@@ -3,8 +3,6 @@ import { Router } from 'express';
 import { register, login, logout, refreshTokens, getProfile } from '@/controllers/auth.controller';
 import { authenticate } from '@/middlewares/auth.middleware';
 import { authLimiter } from '@/middlewares/rateLimiters';
-import { validateBody } from '@/middlewares/validateRequest';
-import { loginSchema, registerSchema, refreshTokenSchema } from '@/validations/auth.validation';
 
 const router = Router();
 
@@ -15,15 +13,17 @@ router.use(authLimiter);
  * @route   POST /api/v1/auth/register
  * @desc    Register a new user
  * @access  Public
+ * validateBody(registerSchema),
  */
-router.post('/register', validateBody(registerSchema), register);
+router.post('/register', register);
 
 /**
  * @route   POST /api/v1/auth/login
  * @desc    Login user
  * @access  Public
+ * validateBody(loginSchema),
  */
-router.post('/login', validateBody(loginSchema), login);
+router.post('/login', login);
 
 /**
  * @route   POST /api/v1/auth/logout
@@ -36,8 +36,9 @@ router.post('/logout', authenticate, logout);
  * @route   POST /api/v1/auth/refresh
  * @desc    Refresh access token
  * @access  Public
+ * validateBody(refreshTokenSchema),
  */
-router.post('/refresh', validateBody(refreshTokenSchema), refreshTokens);
+router.post('/refresh', refreshTokens);
 
 /**
  * @route   GET /api/v1/auth/profile

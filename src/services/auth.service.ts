@@ -1,5 +1,5 @@
-import User from '@/models/user.model';
-import { UserDocument, UserRegistrationData, UserLoginData } from '@/models/user.types';
+import User from '@/models/User';
+import { UserDocument, UserRegistrationData, UserLoginData } from '@/models/UserTypes';
 import { ErrorCategory } from '@/types/errorTypes';
 import { ApiError } from '@/utils/ApiErrors';
 import { verifyAccessToken, verifyRefreshToken, type TokenPayload } from '@/utils/tokens';

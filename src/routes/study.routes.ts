@@ -1,4 +1,5 @@
 import { Router } from 'express';
+
 import {
   createSession,
   getSessions,
@@ -9,14 +10,6 @@ import {
   getCardProgressSummary,
 } from '@/controllers/study.controller';
 import { authenticate } from '@/middlewares/auth.middleware';
-import { validateBody, validateQuery, validateParams } from '@/middlewares/validateRequest';
-import {
-  createSessionSchema,
-  getSessionsQuerySchema,
-  getProgressQuerySchema,
-  getCardProgressQuerySchema,
-  categoryParamsSchema,
-} from '@/validations/study.validation';
 
 const router = Router();
 
@@ -27,8 +20,9 @@ router.use(authenticate);
  * @route   POST /api/v1/study/sessions
  * @desc    Create a new study session
  * @access  Private
+ * validateBody(createSessionSchema)
  */
-router.post('/sessions', validateBody(createSessionSchema), createSession);
+router.post('/sessions', createSession);
 
 /**
  * @route   GET /api/v1/study/sessions
@@ -36,16 +30,18 @@ router.post('/sessions', validateBody(createSessionSchema), createSession);
  * @access  Private
  * @query   studyType? - Filter by study type (kana, vocabulary, flashcard)
  * @query   limit? - Number of sessions to return (default: 10)
+ * validateQuery(getSessionsQuerySchema),
  */
-router.get('/sessions', validateQuery(getSessionsQuerySchema), getSessions);
+router.get('/sessions', getSessions);
 
 /**
  * @route   GET /api/v1/study/progress
  * @desc    Get user's progress by study type
  * @access  Private
  * @query   studyType? - Filter by study type (kana, vocabulary, flashcard)
+ * validateQuery(getProgressQuerySchema),
  */
-router.get('/progress', validateQuery(getProgressQuerySchema), getProgress);
+router.get('/progress', getProgress);
 
 /**
  * @route   GET /api/v1/study/stats
@@ -59,8 +55,9 @@ router.get('/stats', getStats);
  * @desc    Get user's progress for a specific category with detailed sessions and cards
  * @access  Private
  * @param   category - Category name (e.g., 'hiragana-words', 'vocabulary', etc.)
+ * validateParams(categoryParamsSchema),
  */
-router.get('/progress/:category', validateParams(categoryParamsSchema), getCategoryProgress);
+router.get('/progress/:category', getCategoryProgress);
 
 /**
  * @route   GET /api/v1/study/cards
@@ -69,8 +66,9 @@ router.get('/progress/:category', validateParams(categoryParamsSchema), getCateg
  * @query   studyType? - Filter by study type (kana, vocabulary, flashcard, words)
  * @query   category? - Filter by category
  * @query   masteryLevel? - Filter by mastery level (0-5)
+ * validateQuery(getCardProgressQuerySchema),
  */
-router.get('/cards', validateQuery(getCardProgressQuerySchema), getCardProgress);
+router.get('/cards', getCardProgress);
 
 /**
  * @route   GET /api/v1/study/cards/summary
@@ -78,7 +76,8 @@ router.get('/cards', validateQuery(getCardProgressQuerySchema), getCardProgress)
  * @access  Private
  * @query   studyType? - Filter by study type (kana, vocabulary, flashcard, words)
  * @query   category? - Filter by category
+ * validateQuery(getCardProgressQuerySchema),
  */
-router.get('/cards/summary', validateQuery(getCardProgressQuerySchema), getCardProgressSummary);
+router.get('/cards/summary', getCardProgressSummary);
 
 export default router;

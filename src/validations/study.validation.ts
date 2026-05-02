@@ -11,6 +11,7 @@ export const cardStudyDetailSchema = z.object({
   isCorrect: z.boolean(),
   attempts: z.number().int().min(1).default(1),
   timeSpent: z.number().int().min(0).default(0),
+  peeked: z.boolean().optional(),
 });
 
 export const createSessionSchema = z.object({
@@ -18,13 +19,22 @@ export const createSessionSchema = z.object({
   category: z.string().optional(),
   cardsStudied: z.number().int().min(0),
   correctAnswers: z.number().int().min(0),
+  wrongAnswers: z.number().int().min(0).optional(),
   totalTime: z.number().int().min(0),
+  accuracy: z.number().int().min(0).max(100).optional(),
+  bestStreak: z.number().int().min(0).optional(),
+  peekedCount: z.number().int().min(0).optional(),
+  wrongCardCount: z.number().int().min(0).optional(),
   cardsStudiedDetails: z.array(cardStudyDetailSchema).optional(),
 });
 
 export const getSessionsQuerySchema = z.object({
   studyType: studyTypeEnum.optional(),
-  limit: z.string().transform((val) => parseInt(val, 10)).pipe(z.number().int().min(1).max(100)).optional(),
+  limit: z
+    .string()
+    .transform(val => parseInt(val, 10))
+    .pipe(z.number().int().min(1).max(100))
+    .optional(),
 });
 
 export const getProgressQuerySchema = z.object({
@@ -34,7 +44,11 @@ export const getProgressQuerySchema = z.object({
 export const getCardProgressQuerySchema = z.object({
   studyType: studyTypeEnum.optional(),
   category: z.string().optional(),
-  masteryLevel: z.string().transform((val) => parseInt(val, 10)).pipe(z.number().int().min(0).max(5)).optional(),
+  masteryLevel: z
+    .string()
+    .transform(val => parseInt(val, 10))
+    .pipe(z.number().int().min(0).max(5))
+    .optional(),
 });
 
 export const categoryParamsSchema = z.object({

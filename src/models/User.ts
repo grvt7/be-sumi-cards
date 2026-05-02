@@ -5,7 +5,7 @@ import validator from 'validator';
 
 import { ApiError } from '../utils/ApiErrors';
 
-import { UserDocument } from './user.types';
+import { UserDocument } from './UserTypes';
 import { config } from '@/config';
 
 const userSchema = new Schema<UserDocument>(
