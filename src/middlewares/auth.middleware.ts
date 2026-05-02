@@ -1,30 +1,39 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Response } from 'express';
+import jwt from 'jsonwebtoken';
 
-import { AuthService } from '@/services/auth.service';
-import { ErrorCategory } from '@/types/errorTypes';
+import { ExpressRequestInterface } from '@/models/expressRequest.interface';
+import User from '@/models/user.model';
 import { ApiError } from '@/utils/ApiErrors';
 import asyncHandler from '@/utils/asyncHandler';
 
-const authService = new AuthService();
+export const verifyJWT = asyncHandler(
+  async (req: ExpressRequestInterface, res: Response, next: NextFunction) => {
+    try {
+      const accessToken =
+        req.cookies?.accessToken || req.header('Authorization')?.replace('Bearer ', '');
 
-export const authenticate = asyncHandler(
-  async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
-    const authHeader = req.header('authorization');
+      if (!accessToken) throw new ApiError(401, 'UnAuthorized Request');
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new ApiError(
-        401,
-        'Authorization header missing or invalid',
-        undefined,
-        ErrorCategory.AUTHENTICATION,
-      );
+      const decoded = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET) as
+        | {
+            _id: string;
+            email: string;
+            username: string;
+            fullname: string;
+          }
+        | undefined;
+
+      const user = await User.findById(decoded?._id).select('-password -refreshToken');
+
+      if (!user) throw new ApiError(401, 'Invalid Access Token');
+
+      req.user = user;
+      next();
+    } catch (error) {
+      const message = (error as Error).message;
+      throw new ApiError(401, message || 'Invalid Access Token');
     }
-
-    const token = authHeader.substring(7);
-
-    const { userId } = authService.verifyAccessToken(token);
-    req.userId = userId;
-
-    next();
   },
 );
+
+export const authenticate = verifyJWT;

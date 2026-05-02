@@ -1,12 +1,17 @@
-import mongoose from 'mongoose';
+import mongoose, { ConnectOptions } from 'mongoose';
 
 import { config } from '@/config';
 
-const DB_NAME = 'sumi-db';
+const clientOptions: ConnectOptions = {
+  serverApi: { version: '1', strict: true, deprecationErrors: true },
+};
 
 const connectDB = async () => {
   try {
-    const connectionInstance = await mongoose.connect(`${config.database.url}/${DB_NAME}`);
+    const connectionInstance = await mongoose.connect(
+      `${config.database.url}/${config.database.name}`,
+      clientOptions,
+    );
     console.log(`MongoDb connected !! DB HOST: ${connectionInstance.connection.host}`);
   } catch (error) {
     console.log('MongoDb connection Failed ', error);

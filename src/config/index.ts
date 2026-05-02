@@ -8,7 +8,7 @@ interface Config {
   frontendUrl: string;
   database: {
     url: string;
-    directUrl?: string;
+    name: string;
   };
   jwt: {
     accessTokenSecret: string;
@@ -53,6 +53,7 @@ const getConfig = (): Config => {
     frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
     database: {
       url: process.env.MONGODB_URI!,
+      name: process.env.MONGODB_NAME!,
     },
     jwt: {
       accessTokenSecret: process.env.JWT_ACCESS_SECRET!,

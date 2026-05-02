@@ -4,16 +4,20 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 
-import { config } from '@/config';
+import dataRoutes from './routes/data.routes';
+
+// import { config } from '@/config';
 import errorHandler from '@/middlewares/errorHandler';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { authLimiter, globalLimiter } from '@/middlewares/rateLimiters';
+import authRoutes from '@/routes/auth.routes';
+import studyRoutes from '@/routes/study.routes';
 
 const app = express();
 
 app.use(
   cors({
-    origin: config.cors.origin,
+    origin: 'http://localhost:5173',
     credentials: true,
   }),
 );
@@ -33,6 +37,11 @@ app.use((req, res, next) => {
 app.get('/health', (_req, res) => {
   res.status(200).json({ success: true, data: { status: 'ok' } });
 });
+
+// API Routes
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/study', studyRoutes);
+app.use('/api/v1/data', dataRoutes);
 
 app.use((req, res) => {
   res.status(404).json({
