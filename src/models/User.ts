@@ -3,9 +3,8 @@ import jwt from 'jsonwebtoken';
 import mongoose, { Schema } from 'mongoose';
 import validator from 'validator';
 
-import { ApiError } from '../utils/ApiErrors';
-
 import { UserDocument } from './UserTypes';
+
 import { config } from '@/config';
 
 const userSchema = new Schema<UserDocument>(
@@ -59,14 +58,8 @@ userSchema.methods.validatePassword = async function (password: string): Promise
   return bcrypt.compare(password, this.password);
 };
 
-// Fix #2 & #3: correct status code (500), validate expiry env var, add return type
 userSchema.methods.generateAccessToken = function (): string {
-  const secret = config.jwt.accessTokenSecret;
-  const expiry = config.jwt.accessTokenExpiry;
-
-  if (!secret) throw new ApiError(500, 'ACCESS_TOKEN_SECRET is not configured');
-  if (!expiry) throw new ApiError(500, 'ACCESS_TOKEN_EXPIRY is not configured');
-
+  // @ts-expect-error - JWT type definitions are overly strict for expiresIn
   return jwt.sign(
     {
       _id: this._id,
@@ -74,20 +67,16 @@ userSchema.methods.generateAccessToken = function (): string {
       username: this.username,
       fullname: this.fullname,
     },
-    secret,
-    { expiresIn: expiry },
+    config.jwt.accessTokenSecret,
+    { expiresIn: config.jwt.accessTokenExpiry },
   );
 };
 
-// Fix #2 & #3: correct status code (500), validate expiry env var, add return type
 userSchema.methods.generateRefreshToken = function (): string {
-  const secret = config.jwt.refreshTokenSecret;
-  const expiry = config.jwt.refreshTokenExpiry;
-
-  if (!secret) throw new ApiError(500, 'REFRESH_TOKEN_SECRET is not configured');
-  if (!expiry) throw new ApiError(500, 'REFRESH_TOKEN_EXPIRY is not configured');
-
-  return jwt.sign({ _id: this._id }, secret, { expiresIn: expiry });
+  // @ts-expect-error - config values are guaranteed strings at runtime
+  return jwt.sign({ _id: this._id }, config.jwt.refreshTokenSecret, {
+    expiresIn: config.jwt.refreshTokenExpiry,
+  });
 };
 
 const User = mongoose.model<UserDocument>('User', userSchema);

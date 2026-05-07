@@ -116,7 +116,7 @@ export class AuthService {
         401,
         'Invalid refresh token',
         undefined,
-        ErrorCategory.AUTH,
+        ErrorCategory.AUTHENTICATION,
         true,
         error instanceof Error ? error.stack : undefined,
       );

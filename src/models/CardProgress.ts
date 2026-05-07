@@ -125,11 +125,11 @@ const cardProgressSchema = new Schema<CardProgressDocument>(
       { userId: 1, cardReference: 1 },
       { userId: 1, studyType: 1, 'stats.masteryLevel': 1 },
     ],
-  },
+  } as any,
 );
 
 // Pre-save middleware to update calculated fields
-cardProgressSchema.pre('save', function (next) {
+cardProgressSchema.pre('save', function (next: any) {
   const stats = this.stats;
 
   // Calculate accuracy
@@ -215,7 +215,7 @@ cardProgressSchema.statics.updateFromSession = async function (
     },
   }));
 
-  return this.bulkWrite(bulkOps, { upsert: true });
+  return this.bulkWrite(bulkOps as any);
 };
 
 const CardProgress = mongoose.model<CardProgressDocument>('CardProgress', cardProgressSchema);

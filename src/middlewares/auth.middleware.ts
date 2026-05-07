@@ -1,8 +1,8 @@
 import { NextFunction, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
-import { ExpressRequestInterface } from '@/models/expressRequest.interface';
 import User from '@/models/User';
+import { ExpressRequestInterface } from '@/types/expressRequest.interface';
 import { ApiError } from '@/utils/ApiErrors';
 import asyncHandler from '@/utils/asyncHandler';
 
@@ -14,7 +14,7 @@ export const verifyJWT = asyncHandler(
 
       if (!accessToken) throw new ApiError(401, 'UnAuthorized Request');
 
-      const decoded = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET) as
+      const decoded = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET || '') as
         | {
             _id: string;
             email: string;

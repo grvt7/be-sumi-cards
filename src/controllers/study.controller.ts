@@ -1,3 +1,4 @@
+import type { StudyType } from '@/models/StudyTypes';
 import { StudyService } from '@/services/study.service';
 import { ErrorCategory } from '@/types/errorTypes';
 import { ApiError } from '@/utils/ApiErrors';
@@ -26,8 +27,8 @@ export const getSessions = asyncHandler(async (req, res) => {
   }
 
   const { studyType, limit } = req.query;
-  const parsedLimit = limit ? parseInt(limit) : 10;
-  const sessions = await studyService.getUserSessions(userId, studyType, parsedLimit);
+  const parsedLimit = limit ? parseInt(limit as string) : 10;
+  const sessions = await studyService.getUserSessions(userId, studyType as StudyType, parsedLimit);
 
   res.status(200).json(new ApiResponse(200, sessions, 'Study sessions retrieved'));
 });
@@ -40,7 +41,7 @@ export const getProgress = asyncHandler(async (req, res) => {
   }
 
   const { studyType } = req.query;
-  const progress = await studyService.getUserProgress(userId, studyType);
+  const progress = await studyService.getUserProgress(userId, studyType as StudyType);
 
   res.status(200).json(new ApiResponse(200, progress, 'Progress retrieved'));
 });
@@ -53,7 +54,7 @@ export const getCategoryProgress = asyncHandler(async (req, res) => {
   }
 
   const { category } = req.params;
-  const sessions = await studyService.getCategorySessions(userId, category);
+  const sessions = await studyService.getCategorySessions(userId, category as string);
 
   res.status(200).json(new ApiResponse(200, sessions, 'Category progress retrieved'));
 });
@@ -68,7 +69,7 @@ export const getCardProgress = asyncHandler(async (req, res) => {
   const { studyType, category, masteryLevel } = req.query;
   const cards = await studyService.getCardProgress(
     userId,
-    studyType as string,
+    studyType as StudyType,
     category as string,
     masteryLevel ? parseInt(masteryLevel as string) : undefined,
   );
@@ -86,7 +87,7 @@ export const getCardProgressSummary = asyncHandler(async (req, res) => {
   const { studyType, category } = req.query;
   const summary = await studyService.getCardProgressSummary(
     userId,
-    studyType as string,
+    studyType as StudyType,
     category as string,
   );
 
