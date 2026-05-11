@@ -7,7 +7,9 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-
+    /* Added/Refined Properties */
+    "types": ["node"], 
+    
     "paths": {
       "@/*": ["./src/*"],
       "@constants/*": ["./src/constants/*"],
@@ -19,7 +21,7 @@
       "@utils/*": ["./src/utils/*"],
       "@services/*": ["./src/services/*"],
       "@types/*": ["./src/types/*"]
-    },
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
