@@ -1,35 +1,13 @@
 {
   "compilerOptions": {
-    /* === Core Language & Module Settings === */
-    "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "lib": ["ES2022"],
-    "allowJs": false,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-
-    /* === Strictness & Type Checking === */
-    "strict": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": false,
-
-    /* === File Output === */
+    "target": "ES2020",
+    "module": "commonjs",
     "outDir": "./dist",
     "rootDir": "./src",
-    "declaration": true,
-    "removeComments": false,
-    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
 
-    /* === Decorators (for class-based code, models, DI, etc.) === */
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-
-    /* === Module Aliases === */
     "paths": {
       "@/*": ["./src/*"],
       "@constants/*": ["./src/constants/*"],
@@ -42,15 +20,7 @@
       "@services/*": ["./src/services/*"],
       "@types/*": ["./src/types/*"]
     },
-
-    /* === Incremental & Build Optimization === */
-    "incremental": true,
-    "tsBuildInfoFile": "./dist/.tsbuildinfo",
-
-    /* === Node environment types === */
-    "types": ["node", "express"]
   },
-
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+  "exclude": ["node_modules"]
 }
